@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.android.payment.utils;
+package com.example.android.trivialdrivesample.util;
 
 import android.text.TextUtils;
 import android.util.Log;

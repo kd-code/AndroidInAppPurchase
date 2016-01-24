@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.android.payment.utils;
+package com.example.android.trivialdrivesample.util;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.ServiceConnection;
-//import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -263,8 +262,8 @@ public class IabHelper {
             }
         };
 
-        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
+        Intent serviceIntent = new Intent("ir.cafebazaar.pardakht.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.farsitel.bazaar");
         if (!mContext.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty()) {
             // service available to handle that Intent
             mContext.bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
@@ -562,7 +561,7 @@ public class IabHelper {
                 }
 
                 if (querySkuDetails) {
-                    r = querySkuDetails(ITEM_TYPE_SUBS, inv, moreSubsSkus); //pozirk: was moreItemSkus before
+                    r = querySkuDetails(ITEM_TYPE_SUBS, inv, moreItemSkus);
                     if (r != BILLING_RESPONSE_RESULT_OK) {
                         throw new IabException(r, "Error refreshing inventory (querying prices of subscriptions).");
                     }
@@ -600,13 +599,11 @@ public class IabHelper {
      * call from a UI thread.
      *
      * @param querySkuDetails as in {@link #queryInventory}
-     * @param moreItemSkus as in {@link #queryInventory} //pozirk
-     * @param moreSubsSkus as in {@link #queryInventory} //pozirk
+     * @param moreSkus as in {@link #queryInventory}
      * @param listener The listener to notify when the refresh operation completes.
      */
     public void queryInventoryAsync(final boolean querySkuDetails,
-                               final List<String> moreItemSkus, //pozirk: yeah, it was very hard to make the support of subscriptions
-                               final List<String> moreSubsSkus, //pozirk
+                               final List<String> moreSkus,
                                final QueryInventoryFinishedListener listener) {
         final Handler handler = new Handler();
         checkNotDisposed();
@@ -617,7 +614,7 @@ public class IabHelper {
                 IabResult result = new IabResult(BILLING_RESPONSE_RESULT_OK, "Inventory refresh successful.");
                 Inventory inv = null;
                 try {
-                    inv = queryInventory(querySkuDetails, moreItemSkus, moreSubsSkus);  //pozirk
+                    inv = queryInventory(querySkuDetails, moreSkus);
                 }
                 catch (IabException ex) {
                     result = ex.getResult();
@@ -639,11 +636,11 @@ public class IabHelper {
     }
 
     public void queryInventoryAsync(QueryInventoryFinishedListener listener) {
-        queryInventoryAsync(true, null, null, listener);
+        queryInventoryAsync(true, null, listener);
     }
 
     public void queryInventoryAsync(boolean querySkuDetails, QueryInventoryFinishedListener listener) {
-        queryInventoryAsync(querySkuDetails, null, null, listener);
+        queryInventoryAsync(querySkuDetails, null, listener);
     }
 
 
@@ -826,15 +823,11 @@ public class IabHelper {
         logDebug("Starting async operation: " + operation);
     }
 
-    //pozirk: public
-    public void flagEndAsync() {
+    void flagEndAsync() {
         logDebug("Ending async operation: " + mAsyncOperation);
         mAsyncOperation = "";
         mAsyncInProgress = false;
     }
-    
-    //pozirk: so, how to prevent double tapping of the "buy" button???
-    public boolean isAsyncInProgress() {return mAsyncInProgress;}
 
 
     int queryPurchases(Inventory inv, String itemType) throws JSONException, RemoteException {
