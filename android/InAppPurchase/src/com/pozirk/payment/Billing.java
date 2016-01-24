@@ -98,7 +98,7 @@ public class Billing
 	//now query both regular items and subscriptions
 	public void restore(List<String> items, List<String> subs)
 	{
-		_helper.queryInventoryAsync(true, items, subs, _onRestore);
+		_helper.queryInventoryAsync(true, items, _onRestore);
 	}
 	
 	IabHelper.QueryInventoryFinishedListener _onRestore = new IabHelper.QueryInventoryFinishedListener()

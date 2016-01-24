@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.example.android.trivialdrivesample.util;
+package com.android.payment.utils;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -823,13 +823,17 @@ public class IabHelper {
         logDebug("Starting async operation: " + operation);
     }
 
-    void flagEndAsync() {
+    
+    //pozirk: public
+    public void flagEndAsync() {
         logDebug("Ending async operation: " + mAsyncOperation);
         mAsyncOperation = "";
         mAsyncInProgress = false;
     }
-
-
+    
+    //pozirk: so, how to prevent double tapping of the "buy" button???
+    public boolean isAsyncInProgress() {return mAsyncInProgress;}
+    
     int queryPurchases(Inventory inv, String itemType) throws JSONException, RemoteException {
         // Query purchases
         logDebug("Querying owned items, item type: " + itemType);
